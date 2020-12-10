@@ -1,0 +1,21 @@
+var searchData=
+[
+  ['sc38400baudios_2477',['SC38400BAUDIOS',['../_cambia_a_mayuscula_8c.html#a42bfe29e7df84c08920e1aaf3d2a8851',1,'CambiaAMayuscula.c']]],
+  ['sc9600baudios_2478',['SC9600BAUDIOS',['../_cambia_a_mayuscula_8c.html#a9197a09b9693c49581889c12400746a1',1,'CambiaAMayuscula.c']]],
+  ['seek_5fcur_2479',['SEEK_CUR',['../stdio_8h.html#a4c8d0b76b470ba65a43ca46a88320f39',1,'stdio.h']]],
+  ['seek_5fend_2480',['SEEK_END',['../stdio_8h.html#ad2a2e6c114780c3071efd24f16c7f7d8',1,'stdio.h']]],
+  ['seek_5fset_2481',['SEEK_SET',['../stdio_8h.html#a0d112bae8fd35be772185b6ec6bcbe64',1,'stdio.h']]],
+  ['set_5fpin_5fa_2482',['SET_PIN_A',['../gpio_8h.html#af145a7044163efac3e8629602fffa668',1,'gpio.h']]],
+  ['set_5fpin_5fb_2483',['SET_PIN_B',['../gpio_8h.html#aa595aad99973a71bb502df71653b3dc6',1,'gpio.h']]],
+  ['set_5fpin_5fe_2484',['SET_PIN_E',['../gpio_8h.html#a0357d61a604ab1713d10ccea883bc72d',1,'gpio.h']]],
+  ['set_5fpin_5fg_2485',['SET_PIN_G',['../gpio_8h.html#a4ccba0b8268328639f173bc5f7d0c889',1,'gpio.h']]],
+  ['set_5fpin_5fh_2486',['SET_PIN_H',['../gpio_8h.html#acb1c4cddca5a09b59e64fefc68a4e4bf',1,'gpio.h']]],
+  ['set_5fpin_5fp_2487',['SET_PIN_P',['../gpio_8h.html#a3bccea4f1e7bf86a0dc80cfb525d2ea5',1,'gpio.h']]],
+  ['set_5fpin_5fs_2488',['SET_PIN_S',['../gpio_8h.html#a8a12ce0dbd4cb3e6d2a525691bf7dd12',1,'gpio.h']]],
+  ['set_5fpin_5ft_2489',['SET_PIN_T',['../gpio_8h.html#a55570e81fff2e5da13519c50f70f3696',1,'gpio.h']]],
+  ['sr_5fg_2490',['SR_G',['../gpio_8h.html#a2956801ccccd80195cfd280af242c1fb',1,'gpio.h']]],
+  ['sr_5fh_2491',['SR_H',['../gpio_8h.html#af9aa650c0d3f58b6b0d16bb66a25273b',1,'gpio.h']]],
+  ['stderr_2492',['stderr',['../stdio_8h.html#a5ce35bd5ba5021fd3b2e951e8f497656',1,'stdio.h']]],
+  ['stdin_2493',['stdin',['../stdio_8h.html#aaca70138f0cb63ddb026921afc635179',1,'stdio.h']]],
+  ['stdout_2494',['stdout',['../stdio_8h.html#a0c0ef221f95f64e8632451312fd18cc8',1,'stdio.h']]]
+];
