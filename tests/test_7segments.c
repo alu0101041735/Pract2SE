@@ -33,6 +33,8 @@ int main()
 	timer_repeat_call(10000, refresh_display);
 	//update value every 2ms
 	timer_repeat_call(500000, update_val);
+	serial_init();
+	serial_print("\n\rprueba");
 
 	while (1) {
 		//leer teclado y pedir numero
