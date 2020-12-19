@@ -23,17 +23,25 @@ typedef struct display_data {
 
 display_data display;
 
+void print_refresh_display() {
+	serial_print("\n\rrefresh");
+}
+void print_update_val() {
+	serial_print("\n\rupdate");
+}
 int main() 
 {
 	uint8_t digitos[4];
 	sieteSeg_init();
+	serial_init();
 	//init timer
 	timer_init(3);
 	//refresh every 10ms
 	timer_repeat_call(10000, refresh_display);
+	timer_repeat_call(10000, print_refresh_display);
 	//update value every 2ms
-	timer_repeat_call(500000, update_val);
-	serial_init();
+	timer_repeat_call(10000, refresh_display);
+	timer_repeat_call(10000, print_update_val);
 	serial_print("\n\rprueba");
 
 	while (1) {
