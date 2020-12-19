@@ -38,7 +38,7 @@ int main()
 	timer_init(3);
 	//refresh every 10ms
 	timer_repeat_call(10000, refresh_display);
-	timer_repeat_call(10000, print_refresh_display);
+	timer_repeat_call(10, print_refresh_display);
 	//update value every 2ms
 	timer_repeat_call(10000, refresh_display);
 	timer_repeat_call(10000, print_update_val);
