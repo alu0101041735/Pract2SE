@@ -38,19 +38,31 @@ int main()
 	timer_init(3);
 	//refresh every 10ms
 	timer_repeat_call(10000, refresh_display);
-	timer_repeat_call(10, print_refresh_display);
+	//timer_repeat_call(1000, print_refresh_display);
 	//update value every 2ms
-	timer_repeat_call(10000, refresh_display);
-	timer_repeat_call(10000, print_update_val);
+	//timer_repeat_call(100, update_val);
+	//timer_repeat_call(1000, print_update_val);
 	serial_print("\n\rprueba");
 
+	digitos[0] = 1;
+	digitos[1] = 2;
+	digitos[2] = 3;
+	digitos[3] = 4;
 	while (1) {
+		static uint16_t valor = 0;
+		if (valor > 9999)
+			valor = 0;
 		//leer teclado y pedir numero
-		digitos[0] = 1;
-		digitos[1] = 2;
-		digitos[2] = 3;
-		digitos[3] = 4;
-		sieteSeg_digitos(digitos);
+		//digitos[0] += 1;
+		//if (digitos[0] > 8)
+		//	digitos[0] = 0;
+		//digitos[1] = 2;
+		//digitos[2] = 3;
+		//digitos[3] = 4;
+		//sieteSeg_digitos(digitos);
+		//serial_print("\n\rprueba");
+		//valor += 1;
+		sieteSeg_valor(valor);
 	}
 }
 
@@ -68,7 +80,7 @@ void sieteSeg_init() {
 	display.update_queued = 0;
 
 	gpio_pup_disable_(M6812_PORTG);
-	gpio_set_output_all_reg(M6812_PORTG);
+	gpio_set_output_all_reg(M6812_DDRG);
 }
 
 
@@ -84,7 +96,7 @@ void sieteSeg_digitos(uint8_t* new_digits) {
 void sieteSeg_valor(uint16_t newValue) {
 	uint16_t temp = newValue;
 	uint8_t index = 0;
-	while (temp > 0 && index < 4) {
+	while (temp >= 0 && index < 4) {
 		display.queued_value_array[index] = temp % 10;
 		++index;
 		temp /= 10;
@@ -101,7 +113,7 @@ void update_val() {
 		uint8_t size = 4;
 		uint8_t i;
 		for (i = 0 ; i < size; ++i) {
-			display.value_array[i] = display.queued_value_array[1];
+			display.value_array[i] = display.queued_value_array[i];
 		}
 		display.update_queued = 0;
 	}
@@ -109,6 +121,7 @@ void update_val() {
 
 
 void refresh_display() {
+	update_val();
 	if (display.current_display > 8) {
 		display.current_display = 0x01;
 		display.current_digit = 0;
@@ -124,8 +137,12 @@ void refresh_display() {
 
 	uint8_t digit = display.value_array[display.current_digit];
 	digit &= 0x0F;
+	serial_print("\n\rdigito: ");
+	serial_printdecbyte(digit);
 
 	uint8_t port_data = (display.current_display << 4) | digit;
+	serial_print("\n\rdisplay: ");
+	serial_printbinbyte(display.current_display);
 
 	gpio_write_port(M6812_PORTG, port_data);
 	display.current_display = display.current_display << 0x01;
