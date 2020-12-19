@@ -1,4 +1,4 @@
-#include "gpio.h"
+#include <gpio.h>
 #include <timer.h>
 #include <types.h>
 #include <sys/ports.h>
@@ -18,6 +18,7 @@ typedef struct display_data {
 	uint8_t queued_value_array[4];
 	uint8_t current_digit;
 	uint8_t current_display;
+	int update_queued;
 } display_data;
 
 display_data display;
@@ -29,9 +30,9 @@ int main()
 	//init timer
 	timer_init(3);
 	//refresh every 10ms
-	timer_schelude_call(10000, refresh_display);
+	timer_repeat_call(10000, refresh_display);
 	//update value every 2ms
-	timer_schedule_call(500000, update_val);
+	timer_repeat_call(500000, update_val);
 
 	while (1) {
 		//leer teclado y pedir numero
@@ -45,11 +46,18 @@ int main()
 
 
 void sieteSeg_init() {
-	display.current_value = 0;
-	display.queued_value = 0;
+	display.value_array[0] = 1;
+	display.value_array[1] = 2;
+	display.value_array[2] = 3;
+	display.value_array[3] = 4;
+	display.queued_value_array[0] = 1;
+	display.queued_value_array[1] = 2;
+	display.queued_value_array[2] = 3;
+	display.queued_value_array[3] = 4;
 	display.current_display = 0x01;
+	display.update_queued = 0;
 
-	gpio_pup_disable(M6812_PORTG);
+	gpio_pup_disable_(M6812_PORTG);
 	gpio_set_output_all_reg(M6812_PORTG);
 }
 
@@ -60,6 +68,7 @@ void sieteSeg_digitos(uint8_t* new_digits) {
 	display.queued_value_array[1] = new_digits[1] & mask;
 	display.queued_value_array[2] = new_digits[2] & mask;
 	display.queued_value_array[3] = new_digits[3] & mask;
+	display.update_queued = 1;
 }
 
 void sieteSeg_valor(uint16_t newValue) {
@@ -70,36 +79,45 @@ void sieteSeg_valor(uint16_t newValue) {
 		++index;
 		temp /= 10;
 	}
+	display.update_queued = 1;
 }
 
 
 void update_val() {
-	display.queued_value =  newValue;
-	uint8_t* aux_ptr = display.value_array;
-	display.value_array = display.queued_value_array;
-	display.queued_value_array = aux_ptr;
+	if (display.update_queued) {
+		//uint8_t *aux_ptr = display.value_array;
+		//*display.value_array = *display.queued_value_array;
+		//*display.queued_value_array = aux_ptr;
+		uint8_t size = 4;
+		uint8_t i;
+		for (i = 0 ; i < size; ++i) {
+			display.value_array[i] = display.queued_value_array[1];
+		}
+		display.update_queued = 0;
+	}
 }
 
 
 void refresh_display() {
-	if (current_display > 8) {
-		current_display = 0x01;
+	if (display.current_display > 8) {
+		display.current_display = 0x01;
 		display.current_digit = 0;
 	}
 
-	/* The port_data variable will hold the 7segment
-	 * display to ve enabled on it's 4 most significant bits
+	/* The port_data variable will hold the 7 segment
+	 * display to be enabled on it's 4 most significant bits
 	 * and the number to display on the other 4 bits.
 	 * 			       selected 
 	 *				 		 display  digit
 	 * port_data = xxxx     xxxx
 	 */
+
 	uint8_t digit = display.value_array[display.current_digit];
 	digit &= 0x0F;
 
-	uint8_t port_data = (current_display << 4) | digit;
+	uint8_t port_data = (display.current_display << 4) | digit;
 
-	gpio_write_port(port_data);
+	gpio_write_port(M6812_PORTG, port_data);
 	display.current_display = display.current_display << 0x01;
 	++display.current_digit;
 
