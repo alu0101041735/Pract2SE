@@ -1,71 +1,103 @@
+/**
+ * \file teclado.c
+ * \author Daniel Paz Marcos
+ * \author David Martín Martín
+ * \date 21/12/20
+ * */
+
 #include <gpio.h>
 #include <timer.h>
+#include <teclado.h>
 #include <types.h>
 #include <sys/ports.h>
 #include <sys/sio.h>
-
-#define F1 0x01000000
-#define F2 0x00000010
-#define F3 0x00000100
-#define F4 0x00010000
-
-#define C1 0x00100000
-#define C2 0x10000000
-#define C3 0x00001000
-
 
 
 void teclado_init()
 {
 
-  gpio_pup_disable_(M6812_PORTG);
-  gpio_set_input_all_reg(SET_PIN_G);
+  gpio_pup_enable(M6812_PORTG);
+
+  gpio_set_input(SET_PIN_G, 0);
+  gpio_set_input(SET_PIN_G, 2);
+  gpio_set_input(SET_PIN_G, 4);
+
+  gpio_set_output(SET_PIN_G, 1);
+  gpio_set_output(SET_PIN_G, 3);
+  gpio_set_output(SET_PIN_G, 5);
+  gpio_set_output(SET_PIN_G, 6);
+
+  gpio_write_pin(M6812_PORTG, 1, 0);
+  gpio_write_pin(M6812_PORTG, 3, 0);
+  gpio_write_pin(M6812_PORTG, 5, 0);
+  gpio_write_pin(M6812_PORTG, 6, 0);
 
 }
 
 char teclado_getch()
 {
 
-  uint8_t number = 0x00000000;
+  uint8_t column = 0;
+
+  timer_init(1);
+
+  Optional read;
   do
   {
-    number |=  0 << gpio_read_pin(M6812_PORTG, 0).data;
-    number |=  1 << gpio_read_pin(M6812_PORTG, 1).data;
-    number |=  2 << gpio_read_pin(M6812_PORTG, 2).data;
-    number |=  3 << gpio_read_pin(M6812_PORTG, 3).data;
-    number |=  4 << gpio_read_pin(M6812_PORTG, 4).data;
-    number |=  5 << gpio_read_pin(M6812_PORTG, 5).data;
-    number |=  6 << gpio_read_pin(M6812_PORTG, 6).data;
-    number |=  7 << 0x00000000;
+    read = gpio_read_pin(M6812_PORTG, 0);
+    if (read.data == '0'){
+    	column = 2;
+    }
 
-  } while (!number);
+    read = gpio_read_pin(M6812_PORTG, 2);
+    if (read.data == '0'){
+    	column = 1;
+    }
 
-  char aux;
+    read = gpio_read_pin(M6812_PORTG, 4);
+    if (read.data == '0'){
+    	column = 3;
+    }
 
-  if (number == (uint8_t)(F1 | C1))
-	  aux = '1';
-  else if (number == (uint8_t)(F1 | C2))
-	  aux = '2';
-  else if (number == (uint8_t)(F1 | C3))
-	  aux = '3';
-  else if (number == (uint8_t)(F2 | C1))
-	  aux = '4';
-  else if (number == (uint8_t)(F2 | C2))
-	  aux = '5';
-  else if (number == (uint8_t)(F2 | C3))
-	  aux = '6';
-  else if (number == (uint8_t)(F3 | C1))
-	  aux = '7';
-  else if (number == (uint8_t)(F3 | C2))
-	  aux = '8';
-  else if (number == (uint8_t)(F3 | C3))
-	  aux = '9';
-  else if (number == (uint8_t)(F4 | C1))
-	  aux = '*';
-  else if (number == (uint8_t)(F4 | C2))
-	  aux = '0';
-  else if (number == (uint8_t)(F4 | C3))
-	  aux = '#';
+  } while (column == 0);
+
+
+  timer_sleep(10000);
+  char aux = '0';
+
+  if (column == 1) {
+    if (gpio_read_pin(M6812_PORTG, 1).data == 1)
+      aux = '1';
+    if (gpio_read_pin(M6812_PORTG, 6).data == 1)
+      aux = '4';
+    if (gpio_read_pin(M6812_PORTG, 5).data == 1)
+      aux = '7';
+    if (gpio_read_pin(M6812_PORTG, 3).data == 1)
+      aux = '*';
+  }
+  else if (column == 2) {
+    if (gpio_read_pin(M6812_PORTG, 1).data == 1)
+      aux = '2';
+    if (gpio_read_pin(M6812_PORTG, 6).data == 1)
+      aux = '5';
+    if (gpio_read_pin(M6812_PORTG, 5).data == 1)
+      aux = '8';
+    if (gpio_read_pin(M6812_PORTG, 3).data == 1)
+      aux = '0';
+  }
+  else if (column == 3) {
+    if (gpio_read_pin(M6812_PORTG, 1).data == 1)
+      aux = '3';
+    if (gpio_read_pin(M6812_PORTG, 6).data == 1)
+      aux = '6';
+    if (gpio_read_pin(M6812_PORTG, 5).data == 1)
+      aux = '9';
+    if (gpio_read_pin(M6812_PORTG, 3).data == 1)
+      aux = '#';
+  }
+  else {
+    aux = 'T';
+  }
 
   return aux;
 
@@ -75,65 +107,62 @@ char teclado_getch()
 char teclado_getch_imeout(uint32_t milis)
 {
 
+  uint8_t column = 0;
+
   timer_init(1);
-  uint8_t number = 0x00000000;
 
-  do {
+  do
+  {
+    if (gpio_read_pin(M6812_PORTG, 0).data == 0){
+    	column = 2;
+    }
+    if (gpio_read_pin(M6812_PORTG, 2).data == 0){
+    	column = 1;
+    }
+    if (gpio_read_pin(M6812_PORTG, 4).data == 0){
+    	column = 3;
+    }
+  } while ((column == 0) && (milis < timer_get_mili()));
 
-    number |=  0 << gpio_read_pin(M6812_PORTG, 0).data;
-    number |=  1 << gpio_read_pin(M6812_PORTG, 1).data;
-    number |=  2 << gpio_read_pin(M6812_PORTG, 2).data;
-    number |=  3 << gpio_read_pin(M6812_PORTG, 3).data;
-    number |=  4 << gpio_read_pin(M6812_PORTG, 4).data;
-    number |=  5 << gpio_read_pin(M6812_PORTG, 5).data;
-    number |=  6 << gpio_read_pin(M6812_PORTG, 6).data;
-    number |=  7 << 0x00000000;
 
-  } while ((milis < timer_get_cycle()) && (!number));
+  timer_sleep(10000);
+  char aux = '0';
 
-  char aux;
-
-  if (number == (uint8_t)(F1 | C1))
-	  aux = '1';
-  else if (number == (uint8_t)(F1 | C2))
-	  aux = '2';
-  else if (number == (uint8_t)(F1 | C3))
-	  aux = '3';
-  else if (number == (uint8_t)(F2 | C1))
-	  aux = '4';
-  else if (number == (uint8_t)(F2 | C2))
-	  aux = '5';
-  else if (number == (uint8_t)(F2 | C3))
-	  aux = '6';
-  else if (number == (uint8_t)(F3 | C1))
-	  aux = '7';
-  else if (number == (uint8_t)(F3 | C2))
-	  aux = '8';
-  else if (number == (uint8_t)(F3 | C3))
-	  aux = '9';
-  else if (number == (uint8_t)(F4 | C1))
-	  aux = '*';
-  else if (number == (uint8_t)(F4 | C2))
-	  aux = '0';
-  else if (number == (uint8_t)(F4 | C3))
-	  aux = '#';
+  if (column == 1) {
+    if (gpio_read_pin(M6812_PORTG, 1).data == 1)
+      aux = '1';
+    if (gpio_read_pin(M6812_PORTG, 6).data == 1)
+      aux = '4';
+    if (gpio_read_pin(M6812_PORTG, 5).data == 1)
+      aux = '7';
+    if (gpio_read_pin(M6812_PORTG, 3).data == 1)
+      aux = '*';
+  }
+  else if (column == 2) {
+    if (gpio_read_pin(M6812_PORTG, 1).data == 1)
+      aux = '2';
+    if (gpio_read_pin(M6812_PORTG, 6).data == 1)
+      aux = '5';
+    if (gpio_read_pin(M6812_PORTG, 5).data == 1)
+      aux = '8';
+    if (gpio_read_pin(M6812_PORTG, 3).data == 1)
+      aux = '0';
+  }
+  else if (column == 3) {
+    if (gpio_read_pin(M6812_PORTG, 1).data == 1)
+      aux = '3';
+    if (gpio_read_pin(M6812_PORTG, 6).data == 1)
+      aux = '6';
+    if (gpio_read_pin(M6812_PORTG, 5).data == 1)
+      aux = '9';
+    if (gpio_read_pin(M6812_PORTG, 3).data == 1)
+      aux = '#';
+  }
+  else {
+    aux = 'T';
+  }
 
   return aux;
+ return aux;
 
-}
-
-
-int main() 
-{
-  serial_init();
-
-  while(1) {
-    teclado_init();
-
-    char test = teclado_getch();
-
-
-    serial_print(test);
-    serial_print("\n\n");
-  }
 }
