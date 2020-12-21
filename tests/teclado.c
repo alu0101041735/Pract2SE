@@ -4,80 +4,136 @@
 #include <sys/ports.h>
 #include <sys/sio.h>
 
+#define F1 0x01000000
+#define F2 0x00000010
+#define F3 0x00000100
+#define F4 0x00010000
 
-uint8_t readPort(uint8_t port)
+#define C1 0x00100000
+#define C2 0x10000000
+#define C3 0x00001000
+
+
+
+void teclado_init()
 {
 
-  uint8_t read;
+  gpio_pup_disable_(M6812_PORTG);
+  gpio_set_input_all_reg(SET_PIN_G);
 
-  read |=  0 << gpio_read_pin(port, 0).data;
-  read |=  1 << gpio_read_pin(port, 1).data;
-  read |=  2 << gpio_read_pin(port, 2).data;
-  read |=  3 << gpio_read_pin(port, 3).data;
-  read |=  4 << gpio_read_pin(port, 4).data;
-  read |=  5 << gpio_read_pin(port, 5).data;
-  read |=  6 << gpio_read_pin(port, 6).data;
-  read |=  7 << gpio_read_pin(port, 7).data;
+}
 
-  return read;
-  
+char teclado_getch()
+{
+
+  uint8_t number = 0x00000000;
+  do
+  {
+    number |=  0 << gpio_read_pin(M6812_PORTG, 0).data;
+    number |=  1 << gpio_read_pin(M6812_PORTG, 1).data;
+    number |=  2 << gpio_read_pin(M6812_PORTG, 2).data;
+    number |=  3 << gpio_read_pin(M6812_PORTG, 3).data;
+    number |=  4 << gpio_read_pin(M6812_PORTG, 4).data;
+    number |=  5 << gpio_read_pin(M6812_PORTG, 5).data;
+    number |=  6 << gpio_read_pin(M6812_PORTG, 6).data;
+    number |=  7 << 0x00000000;
+
+  } while (!number);
+
+  char aux;
+
+  if (number == (uint8_t)(F1 | C1))
+	  aux = '1';
+  else if (number == (uint8_t)(F1 | C2))
+	  aux = '2';
+  else if (number == (uint8_t)(F1 | C3))
+	  aux = '3';
+  else if (number == (uint8_t)(F2 | C1))
+	  aux = '4';
+  else if (number == (uint8_t)(F2 | C2))
+	  aux = '5';
+  else if (number == (uint8_t)(F2 | C3))
+	  aux = '6';
+  else if (number == (uint8_t)(F3 | C1))
+	  aux = '7';
+  else if (number == (uint8_t)(F3 | C2))
+	  aux = '8';
+  else if (number == (uint8_t)(F3 | C3))
+	  aux = '9';
+  else if (number == (uint8_t)(F4 | C1))
+	  aux = '*';
+  else if (number == (uint8_t)(F4 | C2))
+	  aux = '0';
+  else if (number == (uint8_t)(F4 | C3))
+	  aux = '#';
+
+  return aux;
+
 }
 
 
-uint8_t processInput(uint8_t number) {
+char teclado_getch_imeout(uint32_t milis)
+{
 
-  uint8_t aux;
+  timer_init(1);
+  uint8_t number = 0x00000000;
 
+  do {
 
-  switch(number) {
-    case(0x01100000):
-      aux = 0x00000001;
-      break;
-    case(0x11000000):
-      aux = 0x00000010;
-      break;
-    case(0x01001000):
-      break;
-    case(0x00000000):
-      break;
-    case(0x00000000):
-      break;
-    case(0x00000000):
-      break;
-    case(0x00000000):
-      break;
-    case(0x00000000):
-      break;
-    case(0x00000000):
-      break;
-    case(0x00000000):
-      break;
-    case(0x00000000):
-      break;
-    case(0x00000000):
-      break;
-    default:
-      break;
-  }
+    number |=  0 << gpio_read_pin(M6812_PORTG, 0).data;
+    number |=  1 << gpio_read_pin(M6812_PORTG, 1).data;
+    number |=  2 << gpio_read_pin(M6812_PORTG, 2).data;
+    number |=  3 << gpio_read_pin(M6812_PORTG, 3).data;
+    number |=  4 << gpio_read_pin(M6812_PORTG, 4).data;
+    number |=  5 << gpio_read_pin(M6812_PORTG, 5).data;
+    number |=  6 << gpio_read_pin(M6812_PORTG, 6).data;
+    number |=  7 << 0x00000000;
+
+  } while ((milis < timer_get_cycle()) && (!number));
+
+  char aux;
+
+  if (number == (uint8_t)(F1 | C1))
+	  aux = '1';
+  else if (number == (uint8_t)(F1 | C2))
+	  aux = '2';
+  else if (number == (uint8_t)(F1 | C3))
+	  aux = '3';
+  else if (number == (uint8_t)(F2 | C1))
+	  aux = '4';
+  else if (number == (uint8_t)(F2 | C2))
+	  aux = '5';
+  else if (number == (uint8_t)(F2 | C3))
+	  aux = '6';
+  else if (number == (uint8_t)(F3 | C1))
+	  aux = '7';
+  else if (number == (uint8_t)(F3 | C2))
+	  aux = '8';
+  else if (number == (uint8_t)(F3 | C3))
+	  aux = '9';
+  else if (number == (uint8_t)(F4 | C1))
+	  aux = '*';
+  else if (number == (uint8_t)(F4 | C2))
+	  aux = '0';
+  else if (number == (uint8_t)(F4 | C3))
+	  aux = '#';
+
+  return aux;
+
 }
 
 
 int main() 
 {
   serial_init();
-  gpio_pup_disable_(M6812_PORTH);
-  gpio_set_input_all_reg(SET_PIN_G);
-
-  uint8_t number;
-  uint8_t value;
 
   while(1) {
-    number = readPort(M6812_PORTG);
+    teclado_init();
 
-    value = processinput(number);
+    char test = teclado_getch();
 
-    serial_printbinbyte(number);
+
+    serial_print(test);
     serial_print("\n\n");
   }
-
 }
