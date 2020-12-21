@@ -6,7 +6,7 @@
 #include <sys/sio.h>
 
 
-int main()
+int main(void)
 {
 
   teclado_init();
@@ -15,8 +15,9 @@ int main()
 
     char test = teclado_getch();
 
-    serial_send(test);
-    serial_print("\n\n");
+    //serial_send(test);
+    serial_print("\r\n");
+    serial_print("test");
 
   }
 
