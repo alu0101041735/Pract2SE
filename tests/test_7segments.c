@@ -1,75 +1,151 @@
-#include "gpio.h"
+#include <gpio.h>
 #include <timer.h>
 #include <types.h>
 #include <sys/ports.h>
 #include <sys/sio.h>
 
+void sieteSeg_init();
+void sieteSeg_digitos(uint8_t*);
+void sieteSeg_valor(uint16_t);
+void update_val();
+void refresh_display();
 
-int *readPort(uint8_t port)
-{
+//int *readPort(uint8_t);
+//void setNumber(uint8_t number[8], uint8_t port, uint8_t segment, uint8_t axsegments);
 
-  static int read[8];
+typedef struct display_data {
+	uint8_t value_array[4];
+	uint8_t queued_value_array[4];
+	uint8_t current_digit;
+	uint8_t current_display;
+	int update_queued;
+} display_data;
 
-  read[0] = gpio_read_pin(port, 0).data;
-  read[1] = gpio_read_pin(port, 1).data;
-  read[2] = gpio_read_pin(port, 2).data;
-  read[3] = gpio_read_pin(port, 3).data;
-  read[4] = gpio_read_pin(port, 4).data;
-  read[5] = gpio_read_pin(port, 5).data;
-  read[6] = gpio_read_pin(port, 6).data;
-  read[7] = gpio_read_pin(port, 7).data;
+display_data display;
 
-  return read;
-  
+void print_refresh_display() {
+	serial_print("\n\rrefresh");
 }
-
-
-void setNumber(int number[8], int port, int segment, int maxsegments)
-{
-  int i;
-
-  for (i = 0; i < maxsegments; i++) {
-    if (i == segment) {
-      gpio_write_pin(port, i, 1);
-    }
-    else {
-      gpio_write_pin(port, i, 0);
-    }
-  }
-
-  int pins[4];
-  pins[0] = number[4];
-  pins[1] = number[5];
-  pins[2] = number[6];
-  pins[3] = number[7];
-
-
-  gpio_write_pin(port, 4, pins[0]);
-  gpio_write_pin(port, 5, pins[1]);
-  gpio_write_pin(port, 6, pins[2]);
-  gpio_write_pin(port, 7, pins[3]);
-
+void print_update_val() {
+	serial_print("\n\rupdate");
 }
-
-
 int main() 
 {
-  serial_init();
-  gpio_pup_disable_(M6812_PORTH);
-  gpio_set_output_all_reg(SET_PIN_H);
-  gpio_set_input_all_reg(SET_PIN_G);
+	uint8_t digitos[4];
+	sieteSeg_init();
+	serial_init();
+	//init timer
+	timer_init(3);
+	//refresh every 10ms
+	timer_repeat_call(10000, refresh_display);
+	//timer_repeat_call(1000, print_refresh_display);
+	//update value every 2ms
+	//timer_repeat_call(100, update_val);
+	//timer_repeat_call(1000, print_update_val);
+	serial_print("\n\rprueba");
 
-  int segment = 0;
-  int max_segment_number = 4;
+	digitos[0] = 1;
+	digitos[1] = 2;
+	digitos[2] = 3;
+	digitos[3] = 4;
+	while (1) {
+		static uint16_t valor = 0;
+		if (valor > 9999)
+			valor = 0;
+		//leer teclado y pedir numero
+		//digitos[0] += 1;
+		//if (digitos[0] > 8)
+		//	digitos[0] = 0;
+		//digitos[1] = 2;
+		//digitos[2] = 3;
+		//digitos[3] = 4;
+		//sieteSeg_digitos(digitos);
+		//serial_print("\n\rprueba");
+		//valor += 1;
+		sieteSeg_valor(valor);
+	}
+}
 
-  while(1) {
-    int *number;
-    number = readPort(M6812_PORTG);
-    setNumber(number, M6812_PORTH, segment, max_segment_number);
 
-    ++segment;
+void sieteSeg_init() {
+	display.value_array[0] = 1;
+	display.value_array[1] = 2;
+	display.value_array[2] = 3;
+	display.value_array[3] = 4;
+	display.queued_value_array[0] = 1;
+	display.queued_value_array[1] = 2;
+	display.queued_value_array[2] = 3;
+	display.queued_value_array[3] = 4;
+	display.current_display = 0x01;
+	display.update_queued = 0;
 
-    if (segment >= max_segment_number)
-      segment = 0;
-  }
+	gpio_pup_disable_(M6812_PORTG);
+	gpio_set_output_all_reg(M6812_DDRG);
+}
+
+
+void sieteSeg_digitos(uint8_t* new_digits) {
+	uint8_t mask = 0x0F;
+	display.queued_value_array[0] = new_digits[0] & mask;
+	display.queued_value_array[1] = new_digits[1] & mask;
+	display.queued_value_array[2] = new_digits[2] & mask;
+	display.queued_value_array[3] = new_digits[3] & mask;
+	display.update_queued = 1;
+}
+
+void sieteSeg_valor(uint16_t newValue) {
+	uint16_t temp = newValue;
+	uint8_t index = 0;
+	while (temp >= 0 && index < 4) {
+		display.queued_value_array[index] = temp % 10;
+		++index;
+		temp /= 10;
+	}
+	display.update_queued = 1;
+}
+
+
+void update_val() {
+	if (display.update_queued) {
+		//uint8_t *aux_ptr = display.value_array;
+		//*display.value_array = *display.queued_value_array;
+		//*display.queued_value_array = aux_ptr;
+		uint8_t size = 4;
+		uint8_t i;
+		for (i = 0 ; i < size; ++i) {
+			display.value_array[i] = display.queued_value_array[i];
+		}
+		display.update_queued = 0;
+	}
+}
+
+
+void refresh_display() {
+	update_val();
+	if (display.current_display > 8) {
+		display.current_display = 0x01;
+		display.current_digit = 0;
+	}
+
+	/* The port_data variable will hold the 7 segment
+	 * display to be enabled on it's 4 most significant bits
+	 * and the number to display on the other 4 bits.
+	 * 			       selected 
+	 *				 		 display  digit
+	 * port_data = xxxx     xxxx
+	 */
+
+	uint8_t digit = display.value_array[display.current_digit];
+	digit &= 0x0F;
+	serial_print("\n\rdigito: ");
+	serial_printdecbyte(digit);
+
+	uint8_t port_data = (display.current_display << 4) | digit;
+	serial_print("\n\rdisplay: ");
+	serial_printbinbyte(display.current_display);
+
+	gpio_write_port(M6812_PORTG, port_data);
+	display.current_display = display.current_display << 0x01;
+	++display.current_digit;
+
 }
