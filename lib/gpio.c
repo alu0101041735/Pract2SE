@@ -289,8 +289,8 @@ void gpio_write_pin(int port, unsigned char pin, unsigned char data) {
     return;
   } else {
     char register_cpy = _io_ports[port];
-    register_cpy = (register_cpy & (~pin));
-    register_cpy = register_cpy | ((data & 1) << pin);
+    register_cpy = (register_cpy & ~(0x01 << pin));
+    register_cpy = register_cpy | ((data && 1) << pin);
     //serial_print("\nregister_cpy:");
     //serial_printbinbyte(register_cpy);
     _io_ports[port] = register_cpy;
