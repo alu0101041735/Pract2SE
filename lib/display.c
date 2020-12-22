@@ -2,49 +2,6 @@
 
 display_data display;
 
-void print_refresh_display() {
-	serial_print("\n\rrefresh");
-}
-void print_update_val() {
-	serial_print("\n\rupdate");
-}
-int main() 
-{
-	uint8_t digitos[4];
-	sieteSeg_init();
-	serial_init();
-	//init timer
-	timer_init(3);
-	//refresh every 10ms
-	timer_repeat_call(10000, refresh_display);
-	//timer_repeat_call(1000, print_refresh_display);
-	//update value every 2ms
-	//timer_repeat_call(100, update_val);
-	//timer_repeat_call(1000, print_update_val);
-	serial_print("\n\rprueba");
-
-	digitos[0] = 1;
-	digitos[1] = 2;
-	digitos[2] = 3;
-	digitos[3] = 4;
-	while (1) {
-		static uint16_t valor = 0;
-		if (valor > 9999)
-			valor = 0;
-		//leer teclado y pedir numero
-		//digitos[0] += 1;
-		//if (digitos[0] > 8)
-		//	digitos[0] = 0;
-		//digitos[1] = 2;
-		//digitos[2] = 3;
-		//digitos[3] = 4;
-		//sieteSeg_digitos(digitos);
-		//serial_print("\n\rprueba");
-		//valor += 1;
-		sieteSeg_valor(valor);
-	}
-}
-
 
 void sieteSeg_init() {
 	display.value_array[0] = 1;
@@ -116,12 +73,8 @@ void refresh_display() {
 
 	uint8_t digit = display.value_array[display.current_digit];
 	digit &= 0x0F;
-	serial_print("\n\rdigito: ");
-	serial_printdecbyte(digit);
 
 	uint8_t port_data = (display.current_display << 4) | digit;
-	serial_print("\n\rdisplay: ");
-	serial_printbinbyte(display.current_display);
 
 	gpio_write_port(M6812_PORTG, port_data);
 	display.current_display = display.current_display << 0x01;

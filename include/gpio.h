@@ -14,6 +14,9 @@
 
 /*@{*/
 
+#ifndef GPIO_H
+#define GPIO_H
+
 #include <stdio.h>
 #include <types.h>
 #include <sys/param.h>
@@ -128,3 +131,5 @@ Optional gpio_read_port(int port);
 char gpio_write_port(int port, char data);
 
 /*@}*/
+
+#endif

@@ -1,3 +1,5 @@
+#ifndef DISPLAY_H
+#define DISPAY_H
 
 #include <gpio.h>
 #include <timer.h>
@@ -19,3 +21,5 @@ typedef struct display_data {
 	uint8_t current_display;
 	int update_queued;
 } display_data;
+
+#endif

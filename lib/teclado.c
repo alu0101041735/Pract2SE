@@ -8,7 +8,6 @@
 #include <gpio.h>
 #include <timer.h>
 #include <teclado.h>
-#include <types.h>
 #include <sys/ports.h>
 #include <sys/sio.h>
 
@@ -44,7 +43,8 @@ uint8_t set_and_read(uint8_t port, uint8_t pin, uint8_t port2, uint8_t pin2) {
 		return !opt.data;
 	else return 0;
 }
-char teclado_getch()
+
+uint8_t teclado_getch()
 {
 
   //timer_sleep(20000);
@@ -71,7 +71,7 @@ char teclado_getch()
 
 
   timer_sleep(20000);
-  char aux = '0';
+  uint8_t aux = '0';
 
   gpio_write_pin(M6812_PORTH, 1, 1);
   gpio_write_pin(M6812_PORTH, 3, 1);
@@ -148,7 +148,7 @@ char teclado_getch()
 }
 
 
-char teclado_getch_timeout(uint32_t milis)
+uint8_t teclado_getch_timeout(uint16_t milis)
 {
 
   while ((gpio_read_pin(M6812_PORTH, 2).data == 0) ||
@@ -178,7 +178,7 @@ char teclado_getch_timeout(uint32_t milis)
 
 
   timer_sleep(20000);
-  char aux = '0';
+  uint8_t aux = '0';
 
   gpio_write_pin(M6812_PORTH, 1, 1);
   gpio_write_pin(M6812_PORTH, 3, 1);
@@ -239,5 +239,4 @@ char teclado_getch_timeout(uint32_t milis)
   gpio_write_pin(M6812_PORTH, 6, 1);
 
   return aux;
-
 }

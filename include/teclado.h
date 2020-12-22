@@ -5,6 +5,11 @@
  * \date 21/12/20
  * */
 
+#ifndef TECLADO_H
+#define TECLADO_H
+
+#include <types.h>
+
 #define F1 0x01000000
 #define F2 0x00000010
 #define F3 0x00000100
@@ -16,6 +21,9 @@
 
 void teclado_init();
 
-char teclado_getch();
+uint8_t teclado_getch();
 
-char teclado_getch_timeout(uint32_t milis);
+uint8_t teclado_getch_timeout(uint16_t milis);
+
+
+#endif
