@@ -15,9 +15,9 @@ int main(void)
 
     char test = teclado_getch();
 
-    //serial_send(test);
+    serial_send(test);
     serial_print("\r\n");
-    serial_print("test");
+    //serial_print("test");
 
   }
 
