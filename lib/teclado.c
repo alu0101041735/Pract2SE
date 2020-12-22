@@ -217,10 +217,10 @@ char teclado_getch_timeout(uint32_t milis)
   else {
     aux = 'T';
   }
-  gpio_write_pin(M6812_PORTH, 1, 0);
-  gpio_write_pin(M6812_PORTH, 3, 0);
-  gpio_write_pin(M6812_PORTH, 5, 0);
-  gpio_write_pin(M6812_PORTH, 6, 0);
+  gpio_write_pin(M6812_PORTH, 1, 1);
+  gpio_write_pin(M6812_PORTH, 3, 1);
+  gpio_write_pin(M6812_PORTH, 5, 1);
+  gpio_write_pin(M6812_PORTH, 6, 1);
 
   return aux;
 
