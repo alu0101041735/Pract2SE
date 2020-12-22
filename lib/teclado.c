@@ -37,30 +37,36 @@ void teclado_init()
 char teclado_getch()
 {
 
+  while ((gpio_read_pin(M6812_PORTH, 2).data == 0) ||
+         (gpio_read_pin(M6812_PORTH, 0).data == 0) ||
+         (gpio_read_pin(M6812_PORTH, 4).data == 0)) {
+
+
+  }
+  timer_sleep(20000);
+
   uint8_t column = 0;
 
   timer_init(2);
 
-  Optional read;
   do
   {
-    if (gpio_read_pin(M6812_PORTH, 0).data == '0'){
+    if (gpio_read_pin(M6812_PORTH, 0).data == 0){
       column = 2;
     }
 
-    read = gpio_read_pin(M6812_PORTH, 2);
-    if (gpio_read_pin(M6812_PORTH, 2).data == '0'){
+    if (gpio_read_pin(M6812_PORTH, 2).data == 0){
       column = 1;
     }
 
-    if (gpio_read_pin(M6812_PORTH, 4).data == '0'){
+    if (gpio_read_pin(M6812_PORTH, 4).data == 0){
       column = 3;
     }
 
   } while (column == 0);
 
 
-  timer_sleep(200);
+  timer_sleep(20000);
   char aux = '0';
 
   gpio_write_pin(M6812_PORTH, 1, 1);
@@ -70,47 +76,47 @@ char teclado_getch()
 
   if (column == 1) {
     gpio_write_pin(M6812_PORTH, 1, 0);
-    if (gpio_read_pin(M6812_PORTH, 2).data == '0')
+    if (gpio_read_pin(M6812_PORTH, 2).data == 0)
       aux = '1';
     gpio_write_pin(M6812_PORTH, 6, 0);
-    if (gpio_read_pin(M6812_PORTH, 2).data == '0')
+    if (gpio_read_pin(M6812_PORTH, 2).data == 0)
       aux = '4';
     gpio_write_pin(M6812_PORTH, 5, 0);
-    if (gpio_read_pin(M6812_PORTH, 2).data == '0')
+    if (gpio_read_pin(M6812_PORTH, 2).data == 0)
       aux = '7';
     gpio_write_pin(M6812_PORTH, 3, 0);
-    if (gpio_read_pin(M6812_PORTH, 2).data == '0')
+    if (gpio_read_pin(M6812_PORTH, 2).data == 0)
       aux = '*';
   }
 
   else if (column == 2) {
     gpio_write_pin(M6812_PORTH, 1, 0);
-    if (gpio_read_pin(M6812_PORTH, 0).data == '0')
+    if (gpio_read_pin(M6812_PORTH, 0).data == 0)
       aux = '2';
     gpio_write_pin(M6812_PORTH, 6, 0);
-    if (gpio_read_pin(M6812_PORTH, 0).data == '0')
+    if (gpio_read_pin(M6812_PORTH, 0).data == 0)
       aux = '5';
     gpio_write_pin(M6812_PORTH, 5, 0);
-    if (gpio_read_pin(M6812_PORTH, 0).data == '0')
+    if (gpio_read_pin(M6812_PORTH, 0).data == 0)
       aux = '8';
     gpio_write_pin(M6812_PORTH, 3, 0);
-    if (gpio_read_pin(M6812_PORTH, 0).data == '0')
+    if (gpio_read_pin(M6812_PORTH, 0).data == 0)
       aux = '0';
   }
 
 
   else if (column == 3) {
     gpio_write_pin(M6812_PORTH, 1, 0);
-    if (gpio_read_pin(M6812_PORTH, 4).data == '0')
+    if (gpio_read_pin(M6812_PORTH, 4).data == 0)
       aux = '1';
     gpio_write_pin(M6812_PORTH, 6, 0);
-    if (gpio_read_pin(M6812_PORTH, 4).data == '0')
+    if (gpio_read_pin(M6812_PORTH, 4).data == 0)
       aux = '4';
     gpio_write_pin(M6812_PORTH, 5, 0);
-    if (gpio_read_pin(M6812_PORTH, 4).data == '0')
+    if (gpio_read_pin(M6812_PORTH, 4).data == 0)
       aux = '7';
     gpio_write_pin(M6812_PORTH, 3, 0);
-    if (gpio_read_pin(M6812_PORTH, 4).data == '0')
+    if (gpio_read_pin(M6812_PORTH, 4).data == 0)
       aux = '*';
   }
   else {
@@ -128,6 +134,14 @@ char teclado_getch()
 
 char teclado_getch_timeout(uint32_t milis)
 {
+
+  while ((gpio_read_pin(M6812_PORTH, 2).data == 0) ||
+         (gpio_read_pin(M6812_PORTH, 0).data == 0) ||
+         (gpio_read_pin(M6812_PORTH, 4).data == 0)) {
+
+
+  }
+  timer_sleep(20000);
 
   uint8_t column = 0;
 
@@ -147,7 +161,7 @@ char teclado_getch_timeout(uint32_t milis)
   } while ((column == 0) && (milis < timer_get_mili()));
 
 
-  timer_sleep(10000);
+  timer_sleep(20000);
   char aux = '0';
 
   gpio_write_pin(M6812_PORTH, 1, 1);
@@ -157,47 +171,47 @@ char teclado_getch_timeout(uint32_t milis)
 
   if (column == 1) {
     gpio_write_pin(M6812_PORTH, 1, 0);
-    if (gpio_read_pin(M6812_PORTH, 2).data == '0')
+    if (gpio_read_pin(M6812_PORTH, 2).data == 0)
       aux = '1';
     gpio_write_pin(M6812_PORTH, 6, 0);
-    if (gpio_read_pin(M6812_PORTH, 2).data == '0')
+    if (gpio_read_pin(M6812_PORTH, 2).data == 0)
       aux = '4';
     gpio_write_pin(M6812_PORTH, 5, 0);
-    if (gpio_read_pin(M6812_PORTH, 2).data == '0')
+    if (gpio_read_pin(M6812_PORTH, 2).data == 0)
       aux = '7';
     gpio_write_pin(M6812_PORTH, 3, 0);
-    if (gpio_read_pin(M6812_PORTH, 2).data == '0')
+    if (gpio_read_pin(M6812_PORTH, 2).data == 0)
       aux = '*';
   }
 
   else if (column == 2) {
     gpio_write_pin(M6812_PORTH, 1, 0);
-    if (gpio_read_pin(M6812_PORTH, 0).data == '0')
+    if (gpio_read_pin(M6812_PORTH, 0).data == 0)
       aux = '2';
     gpio_write_pin(M6812_PORTH, 6, 0);
-    if (gpio_read_pin(M6812_PORTH, 0).data == '0')
+    if (gpio_read_pin(M6812_PORTH, 0).data == 0)
       aux = '5';
     gpio_write_pin(M6812_PORTH, 5, 0);
-    if (gpio_read_pin(M6812_PORTH, 0).data == '0')
+    if (gpio_read_pin(M6812_PORTH, 0).data == 0)
       aux = '8';
     gpio_write_pin(M6812_PORTH, 3, 0);
-    if (gpio_read_pin(M6812_PORTH, 0).data == '0')
+    if (gpio_read_pin(M6812_PORTH, 0).data == 0)
       aux = '0';
   }
 
 
   else if (column == 3) {
     gpio_write_pin(M6812_PORTH, 1, 0);
-    if (gpio_read_pin(M6812_PORTH, 4).data == '0')
+    if (gpio_read_pin(M6812_PORTH, 4).data == 0)
       aux = '1';
     gpio_write_pin(M6812_PORTH, 6, 0);
-    if (gpio_read_pin(M6812_PORTH, 4).data == '0')
+    if (gpio_read_pin(M6812_PORTH, 4).data == 0)
       aux = '4';
     gpio_write_pin(M6812_PORTH, 5, 0);
-    if (gpio_read_pin(M6812_PORTH, 4).data == '0')
+    if (gpio_read_pin(M6812_PORTH, 4).data == 0)
       aux = '7';
     gpio_write_pin(M6812_PORTH, 3, 0);
-    if (gpio_read_pin(M6812_PORTH, 4).data == '0')
+    if (gpio_read_pin(M6812_PORTH, 4).data == 0)
       aux = '*';
   }
   else {
