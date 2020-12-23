@@ -23,20 +23,20 @@
  * \brief Function That initializes the Keyboard
  * Configures port H to act as the keyboard input.
  * */
- void teclado_init();
+void teclado_init();
 
- /**
-  * \fn teclado_getch
-  * \brief Function that returns a character read
-  * */
-uint8_t teclado_getch();
+/**
+ * \fn teclado_getch
+ * \brief Function that returns a character read
+ * */
+char teclado_getch();
 
 /**
  * \fn teclado_getch_timeout
  * \brief Function that returns a character read.
  * It has timeout
  * */
-uint8_t teclado_getch_timeout(uint16_t milis);
+char teclado_getch_timeout(uint16_t milis);
 
 
 #endif
