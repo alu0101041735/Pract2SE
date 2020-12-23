@@ -23,7 +23,7 @@ void sieteSeg_init() {
   display.update_queued = 1;
 
 	timer_init(3);
-	timer_repeat_call(50000, sieteSeg_refresh);
+	timer_repeat_call(1000, sieteSeg_refresh);
 	
 	sieteSeg_update();
 
