@@ -34,14 +34,14 @@ void teclado_init()
 }
 
 uint8_t set_and_read(uint8_t port, uint8_t pin, uint8_t port2, uint8_t pin2) {
-	
-	gpio_write_pin(port, pin, 0);
-	Optional opt;
-	opt = gpio_read_pin(port2, pin2);
-	gpio_write_pin(port, pin, 1);
-	if (opt.is_valid) 
-		return !opt.data;
-	else return 0;
+
+  gpio_write_pin(port, pin, 0);
+  Optional opt;
+  opt = gpio_read_pin(port2, pin2);
+  gpio_write_pin(port, pin, 1);
+  if (opt.is_valid) 
+    return !opt.data;
+  else return 0;
 }
 
 uint8_t teclado_getch()
@@ -116,7 +116,7 @@ uint8_t teclado_getch()
     gpio_write_pin(port, 6, 0);
     gpio_write_pin(port, 5, 0);
     gpio_write_pin(port, 3, 0);
-  while (gpio_read_pin(M6812_PORTH, 0).data == 0);
+    while (gpio_read_pin(M6812_PORTH, 0).data == 0);
   }
 
 
@@ -137,7 +137,7 @@ uint8_t teclado_getch()
     gpio_write_pin(port, 6, 0);
     gpio_write_pin(port, 5, 0);
     gpio_write_pin(port, 3, 0);
-  while (gpio_read_pin(M6812_PORTH, 4).data == 0);
+    while (gpio_read_pin(M6812_PORTH, 4).data == 0);
   }
   else {
     aux = 'T';
@@ -152,8 +152,8 @@ uint8_t teclado_getch_timeout(uint16_t milis)
 {
 
   while ((gpio_read_pin(M6812_PORTH, 2).data == 0) ||
-         (gpio_read_pin(M6812_PORTH, 0).data == 0) ||
-         (gpio_read_pin(M6812_PORTH, 4).data == 0)) {
+      (gpio_read_pin(M6812_PORTH, 0).data == 0) ||
+      (gpio_read_pin(M6812_PORTH, 4).data == 0)) {
 
 
   }
@@ -166,13 +166,13 @@ uint8_t teclado_getch_timeout(uint16_t milis)
   do
   {
     if (gpio_read_pin(M6812_PORTH, 0).data == 0){
-    	column = 2;
+      column = 2;
     }
     if (gpio_read_pin(M6812_PORTH, 2).data == 0){
-    	column = 1;
+      column = 1;
     }
     if (gpio_read_pin(M6812_PORTH, 4).data == 0){
-    	column = 3;
+      column = 3;
     }
   } while ((column == 0) && (milis < timer_get_mili()));
 
