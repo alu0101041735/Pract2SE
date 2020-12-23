@@ -6,7 +6,7 @@
 int main() {
 	sieteSeg_init();
 	teclado_init();
-	//motor_init();
+	motor_init();
 	serial_init();
 	uint8_t digitos[4];
 	uint8_t valor = 0;
@@ -30,8 +30,8 @@ int main() {
 			case '#':
 				if ((teclado_getch() == '#') && (valor <= 100)) {
 				  serial_print("\r\nPorcentaje rpm: ");
-					serial_printdecbyte(valor);
-					//set_rpm_pct(valor);
+					set_rpm_pct((int8_t) valor);
+					serial_printdecbyte((int8_t) valor);
 				} else {
 					sieteSeg_valor(0);
 				}
