@@ -10,9 +10,6 @@
 void motor_init();
 void set_rpm_max();
 void set_rpm_min();
-void set_rpm_pct(uint8_t percentage);
-uint8_t set_cycle(uint16_t hertz);
-void set_direction(uint8_t);
-void get_direction();
+void set_rpm_pct(int8_t percentage);
 
 

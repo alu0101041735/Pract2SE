@@ -381,13 +381,11 @@ void ad_start()
 		if (interrupMode_) ///si interrupciones habilitadas
 		{
 				///permitimos las interrupciones
-				unlock();
 				_io_ports[M6812_ATD0CTL2 + DirAD_] |= M6812B_ASCIE;
 		}
     else
 		{
 		  	/// Deshabilitamos interrupciones
-				lock ();
 				_io_ports[M6812_ATD0CTL2 + DirAD_] &= ~M6812B_ASCIE;
 		}
 

@@ -1,42 +1,52 @@
 
 #include <timer.h>
 #include <ad.h>
-//#include "7Segmentos.c"
 #include <timer.h>
 #include <types.h>
 #include <sys/ports.h>
 #include <sys/sio.h>
+#include <display.h>
+#include <teclado.h>
 
 int main() 
 {
-  uint16_t * valores;
+  uint16_t*  valor;
 
-  ad_pin_inicio(3,0);
+  sieteSeg_init();
+  serial_init();
+	char digitos[4];	
+	serial_print("\r\nIniciando programa");
+	digitos[0] = 0;
+	digitos[1] = 0;
+	digitos[2] = 0;
+	digitos[3] = 0;
+	sieteSeg_digitos(digitos);
+	timer_init(3);
+	timer_repeat_call(10000, refresh_display);
 
+  ad_pin_inicio(0,0);
+  serial_print("\n\r");
   ad_modulo(0,0);
-
-  ad_ocho_o_diez_bits(8,0);
-
-  ad_ciclos_muestreo(2,0);
-
+  serial_print("\n\r");
+  ad_ocho_o_diez_bits(1,0);
+  serial_print("\n\r");
+  ad_ciclos_muestreo(4,0);
+  serial_print("\n\r");
   ad_scanMode(1,0);
+  serial_print("\n\r");
+  ad_cantidadConversiones(4,0);
+  serial_print("\n\r");
 
-  ad_cantidadConversiones(1,0);
 
-  ///Hasta aquí se han recogido todos los datos en modo interactivo, para poder hacer las pruebas más fácilmente.
 
-  ad_activarInterrupMode(0); ///Me aseguro de desactivar las interrupciones
-  ad_setUserFunction(0);
-  ad_start(); ///se inicia el proceso
-  timer_init(1);
+  ad_activarInterrupMode(0);
+  ad_setUserFunction(NULL);
+  ad_start();
 
   while (1)
   {
-    valores = ad_wait_for_data(); ///espero a una lectura total de la secuencia. También se ejecutaría la rutina de usuario en caso de definirla.
-
-    //sieteSeg_valor(valores[0]);
-
-    //timer_repeat_call(100000, sieteSeg_valor(valores[0]));
+    valor = ad_wait_for_data();
+    sieteSeg_valor(*valor);
 
   }
 
