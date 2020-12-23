@@ -10,7 +10,7 @@
 #include <types.h>
 #include <sys/ports.h>
 #include <sys/sio.h>
-#include <display.h>
+#include <sieteseg.h>
 #include <teclado.h>
 
 int main() 

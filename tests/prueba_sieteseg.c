@@ -1,11 +1,11 @@
 /***
  * \file test_7segments.c
- * \author Daniel Paz Marcos
  * \author David Martín Martín
+ * \author Daniel Paz Marcos
  * */
 
 #include <gpio.h>
-#include <display.h>
+#include <sieteseg.h>
 #include <timer.h>
 #include <types.h>
 #include <sys/ports.h>

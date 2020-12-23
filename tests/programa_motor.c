@@ -1,7 +1,12 @@
+/***
+ * \file test_7segments.c
+ * \author David Martín Martín
+ * \author Daniel Paz Marcos
+ * */
 #include <sys/sio.h>
 #include <teclado.h>
 #include <motor.h>
-#include <display.h>
+#include <sieteseg.h>
 
 int main() {
   sieteSeg_init();
