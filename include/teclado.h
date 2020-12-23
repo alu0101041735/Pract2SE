@@ -34,6 +34,7 @@ char teclado_getch();
 /**
  * \fn teclado_getch_timeout
  * \brief Function that returns a character read.
+ * \param milis Millisecs to wait before timeout.
  * It has timeout
  * */
 char teclado_getch_timeout(uint16_t milis);

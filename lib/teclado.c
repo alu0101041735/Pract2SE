@@ -32,6 +32,10 @@ void teclado_init()
 
 }
 
+/**
+ * \fn set_and_read
+ * \brief Internal function that set and read a port
+ * */
 uint8_t set_and_read(uint8_t port, uint8_t pin, uint8_t port2, uint8_t pin2) {
 
   gpio_write_pin(port, pin, 0);
