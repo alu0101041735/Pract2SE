@@ -6,7 +6,7 @@
 int main() {
   sieteSeg_init();
   teclado_init();
-  //motor_init();
+  motor_init();
   serial_init();
   uint8_t digitos[4];
   uint8_t valor = 0;
@@ -14,12 +14,10 @@ int main() {
 
   serial_print("\r\nIniciando programa");
   for ( i = 0; i < 4; ++i) {
-    digitos[i] = 0;
+    digitos[i] = 8;
   }
 
   sieteSeg_digitos(digitos);
-  timer_init(3);
-  timer_repeat_call(10000, refresh_display);
 
   i = 0;
   while (1) {
@@ -31,7 +29,7 @@ int main() {
         if ((teclado_getch() == '#') && (valor <= 100)) {
           serial_print("\r\nPorcentaje rpm: ");
           serial_printdecbyte(valor);
-          //set_rpm_pct(valor);
+          set_rpm_pct(valor);
         } else {
           sieteSeg_valor(0);
         }

@@ -5,6 +5,7 @@
  * */
 
 #include <display.h>
+#include <timer.h>
 
 display_data display;
 
@@ -14,12 +15,17 @@ void sieteSeg_init() {
   display.value_array[1] = 2;
   display.value_array[2] = 3;
   display.value_array[3] = 4;
-  display.queued_value_array[0] = 1;
-  display.queued_value_array[1] = 2;
-  display.queued_value_array[2] = 3;
-  display.queued_value_array[3] = 4;
+  display.queued_value_array[0] = 0;
+  display.queued_value_array[1] = 0;
+  display.queued_value_array[2] = 0;
+  display.queued_value_array[3] = 0;
   display.current_display = 0x01;
-  display.update_queued = 0;
+  display.update_queued = 1;
+
+	timer_init(3);
+	timer_repeat_call(200000, sieteSeg_refresh);
+	
+	sieteSeg_update();
 
   gpio_pup_disable_(M6812_PORTG);
   gpio_set_output_all_reg(M6812_DDRG);
@@ -47,7 +53,7 @@ void sieteSeg_valor(uint16_t newValue) {
 }
 
 
-void update_val() {
+void sieteSeg_update() {
   if (display.update_queued) {
     //uint8_t *aux_ptr = display.value_array;
     //*display.value_array = *display.queued_value_array;
@@ -62,8 +68,8 @@ void update_val() {
 }
 
 
-void refresh_display() {
-  update_val();
+void sieteSeg_refresh() {
+  sieteSeg_update();
   if (display.current_display > 8) {
     display.current_display = 0x01;
     display.current_digit = 0;
