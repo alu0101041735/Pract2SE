@@ -14,6 +14,7 @@ int main() {
   serial_print("\ntest_ad_tiempo_muestreo.c ==========\n");
 
   while(1) {
+    serial_print(valor[0]);
     serial_print("\n\nNueva configuración");
     ad_ciclos_muestreo(0,1);
     ad_ocho_o_diez_bits(0,1);

@@ -129,7 +129,6 @@ Optional gpio_read_pin(int port, unsigned char pin);
 Optional gpio_read_port(int port);
 
 char gpio_write_port(int port, char data);
-
 /*@}*/
 
 #endif
