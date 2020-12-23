@@ -1,3 +1,9 @@
+/**
+ * \file display.c
+ * \author David Martín Martín
+ * \author Daniel Paz Marcos
+ * */
+
 #include <display.h>
 
 display_data display;

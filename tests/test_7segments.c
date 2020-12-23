@@ -1,3 +1,9 @@
+/***
+ * \file test_7segments.c
+ * \author Daniel Paz Marcos
+ * \author David Martín Martín
+ * */
+
 #include <gpio.h>
 #include <timer.h>
 #include <types.h>

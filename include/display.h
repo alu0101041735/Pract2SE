@@ -1,3 +1,9 @@
+/**
+ * \file display.h
+ * \author David Martín Martín
+ * \author Daniel Paz Marcos
+ * */
+
 #ifndef DISPLAY_H
 #define DISPAY_H
 

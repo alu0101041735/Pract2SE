@@ -1,3 +1,9 @@
+/**
+ * \file test_teclado.c
+ * \author David Martín Martín
+ * \author Daniel Paz Marcos
+ * */
+
 #include <gpio.h>
 #include <timer.h>
 #include <teclado.h>

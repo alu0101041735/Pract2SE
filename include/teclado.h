@@ -2,7 +2,6 @@
  * \file teclado.h
  * \author Daniel Paz Marcos
  * \author David Martín Martín
- * \date 21/12/20
  * */
 
 #ifndef TECLADO_H

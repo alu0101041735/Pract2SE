@@ -2,7 +2,6 @@
  * \file teclado.c
  * \author Daniel Paz Marcos
  * \author David Martín Martín
- * \date 21/12/20
  * */
 
 #include <gpio.h>

@@ -1,3 +1,8 @@
+/**
+ * \file test_potentiometer.c
+ * \author David Martín Martín
+ * \author Daniel Paz Marcos
+ * */
 
 #include <timer.h>
 #include <ad.h>
